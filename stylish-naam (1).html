@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>स्टाइलिश नाम बनाएँ</title>
+<style>
+:root{color-scheme:dark;--ink:#F4F2FF;--card:rgba(20,16,50,.62);--line:rgba(255,255,255,.22);--acc:#FF3D9A;--accInk:#fff;--mute:#C3BDF0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;color:var(--ink);font-family:"Noto Sans Devanagari","Hind",system-ui,sans-serif;line-height:1.6;background:radial-gradient(120% 90% at 20% 0%,#5B2BE0 0%,#2A1470 40%,#0C0A2E 100%);background-attachment:fixed;overflow-x:hidden}
+#stage{position:fixed;inset:0;perspective:900px;overflow:hidden;z-index:0;pointer-events:none}
+#grid{position:absolute;left:-50%;width:200%;height:70%;bottom:-18%;transform:rotateX(68deg);transform-origin:bottom;background-image:linear-gradient(rgba(0,255,230,.55) 2px,transparent 2px),linear-gradient(90deg,rgba(255,61,154,.55) 2px,transparent 2px);background-size:70px 70px;animation:slide 3s linear infinite;-webkit-mask-image:linear-gradient(transparent,#000 60%);mask-image:linear-gradient(transparent,#000 60%)}
+@keyframes slide{to{background-position:0 70px}}
+.cube{position:absolute;transform-style:preserve-3d;animation:spin var(--d) linear infinite,bob calc(var(--d)*.6) ease-in-out infinite alternate}
+.cube i{position:absolute;inset:0;border:1px solid rgba(255,255,255,.5);background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.55}
+@keyframes spin{to{transform:rotateX(360deg) rotateY(720deg)}}
+@keyframes bob{from{margin-top:-24px}to{margin-top:24px}}
+main{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:28px 18px 56px}
+h1{font-size:clamp(28px,7vw,40px);line-height:1.25;margin:0 0 6px;font-weight:700;text-shadow:0 2px 18px rgba(255,61,154,.6)}
+p.sub{margin:0 0 18px;color:var(--mute)}
+input{width:100%;font:inherit;font-size:20px;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);backdrop-filter:blur(8px)}
+input:focus-visible,button:focus-visible{outline:3px solid #00F0D8;outline-offset:2px}
+.tabs{display:flex;gap:8px;margin:16px 0 0;flex-wrap:wrap}
+.tabs button{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.tabs button[aria-selected="true"]{background:var(--acc);color:var(--accInk);border-color:transparent}
+ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+li{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;backdrop-filter:blur(10px)}
+.out{flex:1;font-size:21px;overflow-wrap:anywhere;font-family:"Noto Sans Devanagari","Noto Sans Symbols 2","Noto Sans Math",system-ui,sans-serif}
+.lbl{display:block;font-size:12px;color:var(--mute)}
+button{font:inherit;font-size:15px;border:0;border-radius:10px;padding:9px 14px;background:var(--acc);color:var(--accInk);cursor:pointer;white-space:nowrap}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);padding:9px 11px}
+button.on{color:#FF3D9A;border-color:#FF3D9A}
+button.done{background:#00C9B1;color:#04122B}
+.bar{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.note{margin-top:18px;font-size:14px;color:var(--mute)}
+h2{font-size:18px;margin:26px 0 0}
+@media (prefers-reduced-motion:reduce){.cube,#grid{animation:none}}
+</style>
+</head>
+<body>
+<div id="stage" aria-hidden="true"><div id="grid"></div></div>
+<main>
+<h1>स्टाइलिश नाम बनाएँ</h1>
+<p class="sub">नाम लिखें, स्टाइल या माफिया नाम चुनें, और कॉपी करें।</p>
+<input id="n" type="text" value="Mafia" placeholder="अपना नाम लिखें" autocomplete="off" aria-label="आपका नाम">
+<div class="tabs" role="tablist" id="tabs"></div>
+<div class="bar" id="bar"><button id="shuf" hidden>नए नाम दिखाओ</button><button id="dl" hidden>⬇ Download (.txt)</button></div>
+<ul id="list"></ul>
+<h2 id="favh" hidden>पसंदीदा</h2>
+<ul id="favs"></ul>
+<p class="note">फ़ॉन्ट वाले स्टाइल अंग्रेज़ी अक्षरों (A–Z) पर काम करते हैं। पसंदीदा नाम इस ब्राउज़र में सेव रहते हैं।</p>
+<section id="ai" hidden>
+<style>#ai{margin-top:26px;padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px)}#ai h2{margin:0 0 10px}#chat{display:grid;gap:8px;margin-bottom:12px}.msg{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.1);white-space:pre-wrap;overflow-wrap:anywhere}.msg.me{background:rgba(255,61,154,.25)}#q{flex:1;min-width:0;width:auto;font-size:16px;padding:10px 12px}</style>
+<h2>🎙 AI से बात करें</h2>
+<div id="chat"></div>
+<div class="bar" style="margin-top:0"><input id="q" placeholder="बोलें या लिखें: मुझे गेमिंग नाम चाहिए" aria-label="AI से पूछें"><button id="mic">🎙 बोलें</button><button id="send">भेजें</button></div>
+</section>
+<a href="https://t.me/sharechat_clone_121" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:26px;padding:14px 18px;border-radius:14px;background:#229ED9;color:#fff;text-align:center;text-decoration:none;font-size:18px;font-weight:700">Join Telegram Channel</a>
+</main>
+<script>
+const A="ABCDEFGHIJKLMNOPQRSTUVWXYZ",a="abcdefghijklmnopqrstuvwxyz";
+function rng(u,l,ex){ex=ex||{};return s=>[...s].map(c=>{if(ex[c])return ex[c];let i=A.indexOf(c);if(i>=0&&u)return String.fromCodePoint(u+i);i=a.indexOf(c);if(i>=0&&l)return String.fromCodePoint(l+i);return c}).join("")}
+const sc={a:"ᴀ",b:"ʙ",c:"ᴄ",d:"ᴅ",e:"ᴇ",f:"ꜰ",g:"ɢ",h:"ʜ",i:"ɪ",j:"ᴊ",k:"ᴋ",l:"ʟ",m:"ᴍ",n:"ɴ",o:"ᴏ",p:"ᴘ",q:"ǫ",r:"ʀ",s:"ꜱ",t:"ᴛ",u:"ᴜ",v:"ᴠ",w:"ᴡ",x:"x",y:"ʏ",z:"ᴢ"};
+const sup={a:"ᵃ",b:"ᵇ",c:"ᶜ",d:"ᵈ",e:"ᵉ",f:"ᶠ",g:"ᵍ",h:"ʰ",i:"ⁱ",j:"ʲ",k:"ᵏ",l:"ˡ",m:"ᵐ",n:"ⁿ",o:"ᵒ",p:"ᵖ",q:"q",r:"ʳ",s:"ˢ",t:"ᵗ",u:"ᵘ",v:"ᵛ",w:"ʷ",x:"ˣ",y:"ʸ",z:"ᶻ"};
+const ud={a:"ɐ",b:"q",c:"ɔ",d:"p",e:"ǝ",f:"ɟ",g:"ƃ",h:"ɥ",i:"ᴉ",j:"ɾ",k:"ʞ",l:"l",m:"ɯ",n:"u",o:"o",p:"d",q:"b",r:"ɹ",s:"s",t:"ʇ",u:"n",v:"ʌ",w:"ʍ",x:"x",y:"ʎ",z:"z",A:"∀",B:"ᗺ",C:"Ɔ",D:"ᗡ",E:"Ǝ",F:"Ⅎ",G:"⅁",H:"H",I:"I",J:"ſ",K:"⋊",L:"˥",M:"W",N:"N",O:"O",P:"Ԁ",Q:"Ό",R:"ᴚ",S:"S",T:"⊥",U:"∩",V:"Λ",W:"M",X:"X",Y:"⅄",Z:"Z"};
+const goth=rng(0x1D56C,0x1D586),scr=rng(0x1D4D0,0x1D4EA),bold=rng(0x1D400,0x1D41A);
+const dbl=rng(0x1D538,0x1D552,{C:"ℂ",H:"ℍ",N:"ℕ",P:"ℙ",Q:"ℚ",R:"ℝ",Z:"ℤ"});
+const comb=m=>s=>[...s].map(c=>c===" "?c:c+m).join("");
+const styles=[
+["꯭ स्टाइल (हिंदी भी)",comb("\uABED")],["𝁘 ꯭ + 💀",s=>comb("\uABED")("𝁘"+s+"💀")],["꯭ + 🔥",s=>comb("\uABED")(s+"🔥")],["꯭ + 👑",s=>comb("\uABED")("👑"+s)],["छोटे अक्षर",s=>s.toLowerCase()],["छोटे स्क्रिप्ट",s=>scr(s.toLowerCase())],["छोटे गॉथिक",s=>goth(s.toLowerCase())],["छोटे गोल",s=>rng(0,0x24D0)(s.toLowerCase())],["छोटे चौड़े",s=>rng(0,0xFF41)(s.toLowerCase())],["छोटे मोनो",s=>rng(0x1D670,0x1D68A)(s.toLowerCase())],["छोटे बोल्ड",s=>bold(s.toLowerCase())],["छोटे ꯭",s=>comb("\uABED")(s.toLowerCase())],["बड़े ऊपर अक्षर",s=>[...s].map(c=>"ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾqᴿˢᵀᵁⱽᵂˣʸᶻ"[A.indexOf(c.toUpperCase())]||c).join("")],["बोल्ड",bold],["बोल्ड इटैलिक",rng(0x1D468,0x1D482)],["इटैलिक",rng(0x1D434,0x1D44E,{h:"ℎ"})],["स्क्रिप्ट",scr],["गॉथिक",goth],
+["डबल लाइन",dbl],["सैन्स बोल्ड",rng(0x1D5D4,0x1D5EE)],["सैन्स इटैलिक",rng(0x1D608,0x1D622)],["मोनोस्पेस",rng(0x1D670,0x1D68A)],
+["गोल घेरे",rng(0x24B6,0x24D0)],["भरे गोले",s=>rng(0x1F150,0)(s.toUpperCase())],["चौकोर",s=>rng(0x1F170,0)(s.toUpperCase())],
+["स्मॉल कैप्स",s=>[...s.toLowerCase()].map(c=>sc[c]||c).join("")],["छोटे ऊपर अक्षर",s=>[...s.toLowerCase()].map(c=>sup[c]||c).join("")],
+["चौड़ा",rng(0xFF21,0xFF41)],["उल्टा",s=>[...s].reverse().map(c=>ud[c]||c).join("")],
+["अंडरलाइन",comb("\u0332")],["कटा हुआ",comb("\u0336")],["तिरछी लाइन",comb("\u0338")],["बिंदु वाला",comb("\u0307")],
+["अक्षरों के बीच सितारे",s=>[...s].join("✦")],["अक्षरों के बीच बिंदु",s=>[...s].join("•")],["स्पेस वाला",s=>[...s].join(" ")],
+["राजा",s=>"♛ "+scr(s)+" ♛"],["सितारे",s=>"★彡 "+s+" 彡★"],["शाही",s=>"꧁ "+goth(s)+" ꧂"],["राजसी",s=>"꧁༒ "+s+" ༒꧂"],
+["परी",s=>"༺ "+s+" ༻"],["चमक",s=>"✦ "+rng(0x1D5D4,0x1D5EE)(s)+" ✦"],["पंख",s=>"ʚ "+s+" ɞ"],["फूल",s=>"✿ "+scr(s)+" ✿"],
+["दिल",s=>"♡ "+s+" ♡"],["बिजली",s=>"⚡ "+bold(s)+" ⚡"],["आग",s=>"🔥 "+bold(s)+" 🔥"],["ताज",s=>"👑 "+s+" 👑"],
+["डिब्बा",s=>"『 "+s+" 』"],["ब्रैकेट",s=>"【 "+bold(s)+" 】"],["लहर",s=>"•·.·´¯`·.·• "+s+" •·.·´¯`·.·•"],["तलवार",s=>"▄︻デ "+s+" ══━一"],
+["खोपड़ी",s=>"☠ "+goth(s)+" ☠"],["तीर",s=>"➳ "+scr(s)+" ➳"],["हीरा",s=>"◈ "+s+" ◈"],["चाँद-तारा",s=>"☪ "+s+" ☪"]
+];
+const pick=x=>x[Math.floor(Math.random()*x.length)],pk=(x,n)=>x.slice().sort(()=>Math.random()-.5).slice(0,n);
+const T=["Don","Capo","Boss","Padrino","Consigliere"],E=["The Shadow","Iron Fist","Scarface","Black Rose","Ghost","Viper","Night King","Silent Blade","Gold Tooth","Wolf"],
+S=["Corleone","Moretti","Rossi","Gambino","Falcone","Vitale","Santoro","Bellini","Romano","Lucciano"];
+const mafia=[
+v=>["Don "+v+" "+pick(S),"Don"],v=>[goth(v)+" ‘"+pick(E)+"’ "+pick(S),"उपनाम वाला"],v=>["♛ "+pick(T)+" "+v+" ♛","राजा"],
+v=>[v+" “"+pick(E)+"”","गैंग टैग"],v=>["꧁ "+pick(E)+" "+v+" ꧂","शाही"],v=>[scr(v)+" "+pick(S),"स्क्रिप्ट"],
+v=>[v+" भाई "+pick(["डॉन","शैडो","किंग","साहब"]),"देसी"],v=>["☠ "+bold(v)+" "+pick(S)+" ☠","खतरनाक"]];
+const gam=[
+v=>["xX_"+v+"_Xx","गेमर टैग"],v=>[v+"_YT","यूट्यूबर"],v=>["Pro"+v+pick(["777","99","07","X","OP"]),"प्रो"],v=>[v+" • OP","ओपी"],
+v=>["⚡ "+v+" "+pick(["Gaming","Official","Legend","FF","BGMI"])+" ⚡","चैनल"],v=>[pick(["Mr.","Lord","King","Sniper","Rush"])+" "+v,"टाइटल"],
+v=>[v+"_"+pick(["Killer","Slayer","Hunter","Destroyer","Assassin"]),"किलर"],v=>["『"+bold(v)+"』"+pick(["ツ","✔","★"]),"क्लैन"],
+v=>[pick(["Dark","Toxic","Savage","Sigma","Rogue"])+v,"डार्क"],v=>["Team "+v+" "+pick(["Esports","Squad","Clan"]),"टीम"]];
+const att=[
+v=>[v+" 😎 "+pick(["King","Boss","Don","Legend","Baadshah"]),"एटीट्यूड"],v=>["👑 "+v+" | "+pick(["Attitude","Swag","Royal","Nawab"]),"शाही"],
+v=>["Rangbaaz "+v,"देसी"],v=>[v+" ☠ "+pick(["Danger","Savage","Khatarnak"]),"खतरनाक"],v=>[bold(v)+" "+pick(["Official","Rockstar","Unstoppable"]),"बोल्ड"],
+v=>[pick(["Sher","Tiger","Wolf","Baaz"])+" "+v,"जानवर"],v=>[v+" ʙᴀᴅ ʙᴏʏ","बैड बॉय"],v=>["मैं "+v+" हूँ, सब पर भारी","डायलॉग"],
+v=>["Killer "+v+" ツ","स्टाइल"],v=>[v+" ✘ "+pick(["Alone","Legend","Hunter","Wild"]),"अकेला"]];
+const cute=[
+v=>[v+" ♡","दिल"],v=>["Princess "+v+" 👸","प्रिंसेस"],v=>["ᴮᵃᵇʸ "+v,"बेबी"],v=>["✿ "+v+" Rani","रानी"],v=>[v+" Cutie 🍭","क्यूटी"],
+v=>["Chhoti "+v+" 🌸","छोटी"],v=>["🦋 "+scr(v)+" 🦋","तितली"],v=>[v+" "+pick(["Angel","Pari","Jaan","Sunshine","Gudiya"])+" ✨","प्यारा"],
+v=>["♡ "+pick(["Miss","Dear","Little"])+" "+v+" ♡","मीठा"],v=>["🌙 "+v+" 🌙","चाँद"]];
+const M="\uABED",ce=comb(M),emo=["💀","🔥","👑","😈","⚡","🖤","☠"],pre=["𝁘","꧁","✘","♛","⚔"];
+const deshi=[
+v=>[ce(pre[0]+v+"💀"),"𝁘 + 💀"],v=>[ce(v+pick(emo)),"नाम + इमोजी"],v=>[ce(pick(pre)+v+pick(emo)),"मिक्स"],
+v=>[ce(v),"सिर्फ़ ꯭"],v=>[ce(pick(emo)+v+pick(emo)),"दोनों तरफ़ इमोजी"],v=>[ce(v+" "+pick(["भाई","डॉन","किंग","बाबा","शेर"])+pick(emo)),"देसी टाइटल"],
+v=>[ce(pick(pre)+v+" "+pick(["Official","Legend","OP","Boss"])),"टैग"],v=>[ce(v)+" "+pick(emo)+pick(emo),"आख़िर में इमोजी"]];
+const cats=[["स्टाइल",null],["हिंदी ꯭",deshi],["माफिया",mafia],["गेमिंग",gam],["एटीट्यूड",att],["प्यारे",cute]];
+let mode=0,mlist=[],favs=[];
+try{favs=JSON.parse(localStorage.getItem("fav")||"[]")}catch(e){}
+const $=id=>document.getElementById(id),list=$("list"),inp=$("n");
+function val(){return inp.value.trim()||"Mafia"}
+function gen(){mlist=cats[mode][1].map(f=>f(val()))}
+function save(){try{localStorage.setItem("fav",JSON.stringify(favs))}catch(e){}}
+async function copy(t,b){
+  try{await navigator.clipboard.writeText(t)}catch(e){const x=document.createElement("textarea");x.value=t;document.body.appendChild(x);x.select();try{document.execCommand("copy")}catch(_){}x.remove()}
+  const o=b.textContent;b.textContent="कॉपी हो गया";b.classList.add("done");setTimeout(()=>{b.textContent=o;b.classList.remove("done")},1400)}
+function row(t,name,ul){
+  const li=document.createElement("li"),box=document.createElement("div");box.className="out";
+  const l=document.createElement("span");l.className="lbl";l.textContent=name;box.append(l,document.createTextNode(t));
+  const h=document.createElement("button");h.className="ghost"+(favs.includes(t)?" on":"");h.textContent="♥";h.setAttribute("aria-label","पसंदीदा");
+  h.onclick=()=>{favs=favs.includes(t)?favs.filter(x=>x!==t):[t,...favs];save();render()};
+  const b=document.createElement("button");b.textContent="कॉपी";b.onclick=()=>copy(t,b);
+  li.append(box,h,b);ul.appendChild(li)}
+function render(){
+  list.textContent="";$("favs").textContent="";
+  $("shuf").hidden=mode===0;
+  if(mode===0)styles.forEach(([n,f])=>row(f(val()),n,list));else mlist.forEach(([t,n])=>row(t,n,list));
+  favs.forEach(t=>row(t,"पसंदीदा",$("favs")));$("favh").hidden=!favs.length}
+function setMode(m){mode=m;[...$("tabs").children].forEach((b,i)=>b.setAttribute("aria-selected",i===m));if(m>0)gen();render()}
+cats.forEach(([n],i)=>{const b=document.createElement("button");b.setAttribute("role","tab");b.textContent=n;b.onclick=()=>setMode(i);$("tabs").appendChild(b)});
+$("tabs").children[0].setAttribute("aria-selected","true");
+$("shuf").onclick=()=>{gen();render()};
+inp.addEventListener("input",()=>{if(mode>0)gen();render()});
+const cols=[["#FF3D9A","#FFB300"],["#00F0D8","#3D7BFF"],["#9B5CFF","#FF3D9A"],["#B6FF3D","#00C9B1"],["#FF7A3D","#FF3D9A"]];
+const st=$("stage");
+for(let i=0;i<14;i++){
+  const s=50+Math.random()*90,c=document.createElement("div");c.className="cube";
+  const [c1,c2]=cols[i%cols.length];
+  c.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*92}%;top:${Math.random()*80}%;--d:${14+Math.random()*18}s;--c1:${c1};--c2:${c2}`;
+  [["rotateY(0)"],["rotateY(90deg)"],["rotateY(180deg)"],["rotateY(270deg)"],["rotateX(90deg)"],["rotateX(-90deg)"]].forEach(([r])=>{
+    const f=document.createElement("i");f.style.transform=`${r} translateZ(${s/2}px)`;c.appendChild(f)});
+  st.appendChild(c)}
+render();
+(async()=>{
+ let dls=null;try{dls=await claude.use("downloads")}catch(e){}
+ if(!dls)dls={save:async({filename,data})=>{const u=URL.createObjectURL(new Blob([data],{type:"text/plain;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}};
+ const b=$("dl");b.hidden=false;
+ b.onclick=async()=>{
+  const names=mode===0?styles.map(([n,f])=>f(val())):mlist.map(x=>x[0]);
+  let txt=names.join("\n");
+  if(favs.length)txt+="\n\n--- पसंदीदा ---\n"+favs.join("\n");
+  try{await dls.save({filename:"stylish-names.txt",data:txt});b.textContent="✔ Download हो गया";setTimeout(()=>{b.textContent="⬇ Download (.txt)"},1600)}catch(e){if(e&&e.code==="unavailable")b.hidden=true}
+ }
+})();
+(async()=>{
+ let sm=null;try{sm=await claude.use("sample")}catch(e){}
+ const local=p=>{const u=(p.split("यूज़र: ").pop()||"").toLowerCase();
+  const map=[[/माफिया|मफिया|mafia|डॉन|don/,2,"माफिया"],[/गेम|game|gaming|pubg|bgmi|free ?fire/,3,"गेमिंग"],[/एटीट्यूड|attitude|swag|एटिट्यूड/,4,"एटीट्यूड"],[/प्यार|क्यूट|cute|लड़की|girl|princess/,5,"प्यारे"],[/हिंदी|hindi|देसी/,1,"हिंदी"]];
+  const m=map.find(x=>x[0].test(u)),i=m?m[1]:0,v=val();
+  const names=i?pk(cats[i][1].map(f=>f(v)[0]),5):pk(styles,5).map(([n,f])=>f(v));
+  return (m?"ये लीजिए "+m[2]+" नाम।":"ये लीजिए कुछ स्टाइलिश नाम। बोलें: माफिया, गेमिंग, एटीट्यूड या प्यारे।")+"\n"+names.join("\n")};
+ const sample=sm||(async t=>({text:local(t)}));
+ $("ai").hidden=false;
+ const hist=[],q=$("q"),chat=$("chat"),mic=$("mic");
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR)mic.hidden=true;
+ const SYS="तुम एक स्टाइलिश नाम सुझाने वाले दोस्ताना सहायक हो। हिंदी में जवाब दो। पहली लाइन में बोलने लायक एक छोटा वाक्य लिखो (इमोजी या सिंबल के बिना)। उसके नीचे अधिकतम 5 स्टाइलिश नाम अलग-अलग लाइन में दो (फ़ॉन्ट स्टाइल, इमोजी, सजावट के साथ)। मार्कडाउन नहीं। अगर यूज़र नाम न बताए तो इसे इस्तेमाल करो: ";
+ function add(me,t){const d=document.createElement("div");d.className="msg"+(me?" me":"");d.textContent=(me?"आप: ":"AI: ")+t;chat.appendChild(d)}
+ function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="hi-IN";speechSynthesis.speak(u)}catch(e){}}
+ let busy=false;
+ async function go(){
+  const t=q.value.trim();if(!t||busy)return;busy=true;q.value="";add(true,t);
+  try{
+   const r=await sample(SYS+val()+"\n\nपिछली बातचीः\n"+hist.join("\n")+"\n\nयूज़र: "+t,{cache:false});
+   const out=(r.text||"").trim();hist.push("यूज़र: "+t,"AI: "+out);add(false,out);speak(out.split("\n")[0]);
+  }catch(e){add(false,"AI अभी जवाब नहीं दे पाया, थोड़ी देर बाद फिर कोशिश करें।")}
+  busy=false}
+ $("send").onclick=go;q.addEventListener("keydown",e=>{if(e.key==="Enter")go()});
+ mic.onclick=()=>{try{const r=new SR();r.lang="hi-IN";r.onresult=e=>{q.value=e.results[0][0].transcript;go()};r.onerror=()=>{mic.textContent="माइक बंद — लिखकर भेजें"};r.onend=()=>{if(mic.textContent==="🔴 सुन रहा हूँ")mic.textContent="🎙 बोलें"};mic.textContent="🔴 सुन रहा हूँ";r.start()}catch(e){mic.hidden=true}};
+})();
+</script>
+</body>
+</html>
